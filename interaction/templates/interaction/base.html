@@ -15,6 +15,8 @@
       --bg:#07111f;
       --bg-2:#0b1526;
       --surface:#0f1c31;
+      --surface-2:#12233d;
+      --surface-3:#0b1729;
       --text:#eef4ff;
       --muted:#9eb0ca;
       --border:rgba(255,255,255,.08);
@@ -22,7 +24,28 @@
       --brand-2:#7b61ff;
       --shadow:0 20px 60px rgba(0,0,0,.28);
       --radius:24px;
+      --radius-sm:16px;
       --container:1200px;
+    }
+
+    [data-theme="light"]{
+      --bg:#f4f8fc;
+      --bg-2:#eaf1f8;
+      --surface:#ffffff;
+      --surface-2:#f8fbff;
+      --surface-3:#eef4fb;
+      --text:#102033;
+      --muted:#61738d;
+      --border:rgba(16,32,51,.10);
+      --shadow:0 16px 40px rgba(15,23,42,.08);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
     }
 
     body{
@@ -33,6 +56,7 @@
         radial-gradient(circle at top right, rgba(123,97,255,.09), transparent 30%),
         linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
       color:var(--text);
+      min-height:100vh;
     }
 
     a{
@@ -40,68 +64,90 @@
       color:inherit;
     }
 
+    img{
+      max-width:100%;
+      display:block;
+    }
+
     .container{
       width:min(var(--container), calc(100% - 32px));
       margin:0 auto;
     }
 
-    /* HEADER */
     .site-header{
       position:sticky;
       top:0;
-      z-index:50;
+      z-index:100;
       backdrop-filter:blur(12px);
-      background:rgba(7,17,31,.72);
+      background:rgba(7,17,31,.78);
       border-bottom:1px solid var(--border);
+    }
+
+    [data-theme="light"] .site-header{
+      background:rgba(244,248,252,.88);
     }
 
     .topnav{
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:18px;
       padding:14px 0;
-      flex-wrap:wrap;
     }
 
     .brand{
       display:flex;
       align-items:center;
       gap:14px;
+      min-width:0;
+      flex:1;
     }
 
-    /* LOGO BRUT (aucune modification visuelle) */
     .logo{
-      height:52px;
+      height:58px;
       width:auto;
       display:block;
+      flex-shrink:0;
+    }
+
+    .brand-text{
+      min-width:0;
     }
 
     .brand-text h1{
       margin:0;
       font-size:1.05rem;
       font-weight:800;
+      line-height:1.15;
     }
 
     .brand-text p{
       margin:4px 0 0;
       color:var(--muted);
-      font-size:.9rem;
+      font-size:.92rem;
+      line-height:1.35;
     }
 
     .nav-actions{
       display:flex;
+      align-items:center;
       gap:10px;
       flex-wrap:wrap;
     }
 
     .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
       border:none;
       border-radius:14px;
       padding:12px 16px;
       font-weight:700;
       cursor:pointer;
-      font-size:.9rem;
-      transition:.2s;
+      font-size:.94rem;
+      transition:.2s ease;
+      white-space:nowrap;
     }
 
     .btn:hover{
@@ -119,9 +165,13 @@
       color:var(--text);
     }
 
+    [data-theme="light"] .btn-secondary{
+      background:#fff;
+    }
+
     .btn-admin{
-      background:#ef4444;
-      color:white;
+      background:#ff4b4b;
+      color:#fff;
     }
 
     .btn-ghost{
@@ -130,39 +180,171 @@
       color:var(--text);
     }
 
+    .desktop-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .mobile-menu-wrap{
+      display:none;
+      position:relative;
+      flex-shrink:0;
+    }
+
+    .menu-toggle{
+      min-width:48px;
+      height:48px;
+      padding:0 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-size:1.2rem;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    [data-theme="light"] .menu-toggle{
+      background:#fff;
+    }
+
+    .mobile-menu{
+      position:absolute;
+      top:calc(100% + 10px);
+      right:0;
+      width:min(290px, calc(100vw - 24px));
+      padding:12px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(15,28,49,.98), rgba(11,23,41,.98));
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      display:none;
+    }
+
+    [data-theme="light"] .mobile-menu{
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,249,255,.98));
+    }
+
+    .mobile-menu.show{
+      display:grid;
+      gap:10px;
+    }
+
+    .mobile-menu .btn,
+    .mobile-menu a,
+    .mobile-menu button{
+      width:100%;
+    }
+
+    .mobile-menu .btn{
+      justify-content:flex-start;
+      border-radius:14px;
+    }
+
     .page{
-      padding:30px 0;
+      padding:28px 0 60px;
     }
 
     .card{
-      background:rgba(255,255,255,.04);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
       border:1px solid var(--border);
       border-radius:var(--radius);
       padding:24px;
+      box-shadow:var(--shadow);
+    }
+
+    [data-theme="light"] .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,252,255,.98));
+    }
+
+    .messages{
+      display:grid;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .alert{
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      line-height:1.6;
+      font-weight:600;
     }
 
     .footer{
-      padding:30px 0;
+      padding:30px 0 40px;
       color:var(--muted);
     }
 
-    .mono{
-      font-family:monospace;
+    .footer-box{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
     }
 
+    .mono{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    @media (max-width: 860px){
+      .container{
+        width:min(100% - 20px, var(--container));
+      }
+
+      .topnav{
+        padding:12px 0;
+      }
+
+      .brand{
+        min-width:0;
+      }
+
+      .logo{
+        height:54px;
+      }
+
+      .brand-text{
+        display:none;
+      }
+
+      .desktop-actions{
+        display:none;
+      }
+
+      .mobile-menu-wrap{
+        display:block;
+      }
+
+      .page{
+        padding-top:20px;
+      }
+    }
+
+    @media (max-width: 480px){
+      .logo{
+        height:48px;
+      }
+
+      .menu-toggle{
+        min-width:44px;
+        height:44px;
+      }
+    }
   </style>
 
   {% block extra_css %}{% endblock %}
 </head>
-
 <body>
 
-<!-- HEADER -->
 <header class="site-header">
   <div class="container">
     <div class="topnav">
 
-      <!-- LOGO + TITRE -->
       <a href="{% url 'interaction:home' %}" class="brand">
         <img src="{% static 'interaction/img/logo.png' %}" alt="Logo" class="logo">
         <div class="brand-text">
@@ -171,52 +353,65 @@
         </div>
       </a>
 
-      <!-- ACTIONS -->
       <div class="nav-actions">
-        <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Accueil</a>
-        <a href="{% url 'interaction:enfant_create' %}" class="btn btn-primary">Créer un enfant</a>
+        <div class="desktop-actions">
+          <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Accueil</a>
+          <a href="{% url 'interaction:enfant_create' %}" class="btn btn-primary">Créer un enfant</a>
+          <a href="/admin/" class="btn btn-admin">Se connecter</a>
+          <button id="themeBtnDesktop" type="button" class="btn btn-ghost">Mode clair / sombre</button>
+        </div>
 
-        <!-- ADMIN -->
-        <a href="/admin/" class="btn btn-admin">Se connecter</a>
+        <div class="mobile-menu-wrap">
+          <button id="mobileMenuBtn" type="button" class="menu-toggle" aria-label="Ouvrir le menu">
+            ☰
+          </button>
 
-        <!-- THEME -->
-        <button id="themeBtn" class="btn btn-ghost">Mode clair / sombre</button>
+          <div id="mobileMenu" class="mobile-menu">
+            <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Accueil</a>
+            <a href="{% url 'interaction:enfant_create' %}" class="btn btn-primary">Créer un enfant</a>
+            <a href="/admin/" class="btn btn-admin">Se connecter</a>
+            <button id="themeBtnMobile" type="button" class="btn btn-ghost">Mode clair / sombre</button>
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
 </header>
 
-<!-- CONTENU -->
 <main class="page">
   <div class="container">
-
     {% if messages %}
-      <div style="margin-bottom:20px;">
+      <div class="messages">
         {% for message in messages %}
-          <div style="padding:12px; border-radius:10px; margin-bottom:10px; background:rgba(255,255,255,.05);">
+          <div class="alert">
             {{ message }}
           </div>
         {% endfor %}
       </div>
     {% endif %}
-
-    {% block content %}{% endblock %}
   </div>
+
+  {% block content %}{% endblock %}
 </main>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
-    <div class="card">
-      <strong>Interaction Parent-Enfant</strong><br>
-      <span>Plateforme professionnelle de suivi</span>
+    <div class="card footer-box">
+      <div>
+        <strong>Interaction Parent-Enfant</strong><br>
+        <span>Plateforme professionnelle de suivi</span>
+      </div>
+      <div>
+        <span>© <span id="year"></span> Application de suivi</span>
+      </div>
     </div>
   </div>
 </footer>
 
-<!-- SCRIPT -->
 <script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
   const root = document.documentElement;
   const savedTheme = localStorage.getItem("interaction-theme");
 
@@ -224,14 +419,39 @@
     root.setAttribute("data-theme", savedTheme);
   }
 
-  const btn = document.getElementById("themeBtn");
-
-  btn.addEventListener("click", function () {
+  function toggleTheme() {
     const current = root.getAttribute("data-theme") || "dark";
     const next = current === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     localStorage.setItem("interaction-theme", next);
-  });
+  }
+
+  const themeBtnDesktop = document.getElementById("themeBtnDesktop");
+  const themeBtnMobile = document.getElementById("themeBtnMobile");
+
+  if (themeBtnDesktop) {
+    themeBtnDesktop.addEventListener("click", toggleTheme);
+  }
+
+  if (themeBtnMobile) {
+    themeBtnMobile.addEventListener("click", toggleTheme);
+  }
+
+  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      mobileMenu.classList.toggle("show");
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        mobileMenu.classList.remove("show");
+      }
+    });
+  }
 </script>
 
 {% block extra_js %}{% endblock %}
