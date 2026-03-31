@@ -1,0 +1,256 @@
+{% extends "interaction/base.html" %}
+{% block title %}Évaluation | Interaction Parent-Enfant{% endblock %}
+
+{% block extra_css %}
+<style>
+  .eval-wrap{
+    display:grid;
+    gap:22px;
+  }
+
+  .eval-header{
+    padding:28px;
+  }
+
+  .eval-header h2{
+    margin:0 0 8px;
+  }
+
+  .eval-header p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.75;
+  }
+
+  .summary-grid{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
+
+  .summary-box{
+    padding:16px 18px;
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+  }
+
+  .summary-box span{
+    display:block;
+    color:var(--muted);
+    font-size:.88rem;
+    margin-bottom:6px;
+  }
+
+  .summary-box strong{
+    font-size:1rem;
+  }
+
+  .eval-form-card{
+    padding:28px;
+  }
+
+  .questions-list{
+    display:grid;
+    gap:18px;
+  }
+
+  .question-card{
+    padding:22px;
+    border-radius:20px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+  }
+
+  .question-card h4{
+    margin:0 0 14px;
+    line-height:1.6;
+    font-size:1rem;
+  }
+
+  .score-help{
+    margin:0 0 14px;
+    color:var(--muted);
+    font-size:.92rem;
+  }
+
+  .choices{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:12px;
+  }
+
+  .choice-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.03);
+    cursor:pointer;
+    font-weight:600;
+  }
+
+  .choice-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .choice-label input{
+    accent-color:var(--brand);
+  }
+
+  .score-badge{
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.05);
+    font-size:.84rem;
+    font-weight:800;
+    white-space:nowrap;
+  }
+
+  .comment-box{
+    margin-top:20px;
+    display:grid;
+    gap:8px;
+  }
+
+  .comment-box label{
+    font-weight:700;
+  }
+
+  .comment-box textarea{
+    min-height:120px;
+    resize:vertical;
+    padding:16px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:var(--surface-3);
+    color:var(--text);
+    outline:none;
+    font:inherit;
+  }
+
+  .actions{
+    margin-top:22px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  @media (max-width: 900px){
+    .choices{
+      grid-template-columns:1fr;
+    }
+  }
+
+  @media (max-width: 768px){
+    .eval-header,
+    .eval-form-card{
+      padding:22px;
+    }
+
+    .summary-grid{
+      grid-template-columns:1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="eval-wrap">
+
+    <section class="card eval-header">
+      <div class="kicker"><span class="kdot"></span> Nouvelle évaluation</div>
+      <h2>{{ rubrique.libelle }}</h2>
+      <p>
+        Répondez aux questions ci-dessous pour évaluer l’enfant dans cette rubrique.
+        Chaque réponse possède sa propre note pour cette question.
+      </p>
+
+      <div class="summary-grid">
+        <div class="summary-box">
+          <span>Enfant</span>
+          <strong>{{ enfant.nom }} {% if enfant.prenom %}{{ enfant.prenom }}{% endif %}</strong>
+        </div>
+        <div class="summary-box">
+          <span>Code enfant</span>
+          <strong class="mono">{{ enfant.code_enfant }}</strong>
+        </div>
+        <div class="summary-box">
+          <span>Rubrique</span>
+          <strong>{{ rubrique.libelle }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card eval-form-card">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="questions-list">
+          {% for question in questions %}
+            <article class="question-card">
+              <h4>{{ forloop.counter }}. {{ question.question }}</h4>
+
+              <p class="score-help">
+                Barème :
+                Oui = <strong>{{ question.score_oui }}</strong>,
+                Parfois = <strong>{{ question.score_parfois }}</strong>,
+                Non = <strong>{{ question.score_non }}</strong>
+              </p>
+
+              <div class="choices">
+                <label class="choice-label">
+                  <div class="choice-left">
+                    <input type="radio" name="question_{{ question.id }}" value="oui">
+                    <span>Oui</span>
+                  </div>
+                  <span class="score-badge">{{ question.score_oui }} pt{{ question.score_oui|pluralize }}</span>
+                </label>
+
+                <label class="choice-label">
+                  <div class="choice-left">
+                    <input type="radio" name="question_{{ question.id }}" value="parfois">
+                    <span>Parfois</span>
+                  </div>
+                  <span class="score-badge">{{ question.score_parfois }} pt{{ question.score_parfois|pluralize }}</span>
+                </label>
+
+                <label class="choice-label">
+                  <div class="choice-left">
+                    <input type="radio" name="question_{{ question.id }}" value="non">
+                    <span>Non</span>
+                  </div>
+                  <span class="score-badge">{{ question.score_non }} pt{{ question.score_non|pluralize }}</span>
+                </label>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        <div class="comment-box">
+          <label for="commentaire">Commentaire général (facultatif)</label>
+          <textarea
+            id="commentaire"
+            name="commentaire"
+            placeholder="Ajoutez ici une remarque si nécessaire..."
+          >{{ data.commentaire|default:'' }}</textarea>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Enregistrer l’évaluation</button>
+          <a href="{% url 'interaction:enfant_detail' enfant.code_enfant %}" class="btn btn-secondary">Retour à la fiche enfant</a>
+        </div>
+      </form>
+    </section>
+
+  </div>
+</div>
+{% endblock %}

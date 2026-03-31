@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Interaction Parent-Enfant{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg-2:#0b1526;
+      --surface:#0f1c31;
+      --surface-2:#12233d;
+      --surface-3:#0b1729;
+      --text:#eef4ff;
+      --muted:#9eb0ca;
+      --border:rgba(255,255,255,.08);
+      --brand:#4cc9f0;
+      --brand-2:#7b61ff;
+      --shadow:0 20px 60px rgba(0,0,0,.28);
+      --radius:24px;
+      --container:1200px;
+    }
+
+    body{
+      margin:0;
+      font-family:"Plus Jakarta Sans", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(76,201,240,.10), transparent 26%),
+        radial-gradient(circle at top right, rgba(123,97,255,.09), transparent 30%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color:var(--text);
+    }
+
+    a{ text-decoration:none; color:inherit; }
+
+    .container{
+      width:min(var(--container), calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    /* HEADER */
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:blur(12px);
+      background:rgba(7,17,31,.72);
+      border-bottom:1px solid var(--border);
+    }
+
+    .topnav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-mark{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+    }
+
+    .brand-mark img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .brand-text h1{
+      margin:0;
+      font-size:1.05rem;
+      font-weight:800;
+    }
+
+    .brand-text p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .nav-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:.9rem;
+    }
+
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+
+    .btn-admin{
+      background:#ef4444;
+      color:white;
+    }
+
+    .btn-ghost{
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+
+    .page{
+      padding:30px 0;
+    }
+
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:24px;
+    }
+
+    .footer{
+      padding:30px 0;
+      color:var(--muted);
+    }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container">
+    <div class="topnav">
+
+      <a href="{% url 'interaction:home' %}" class="brand">
+        <div class="brand-mark">
+          <img src="{% static 'interaction/img/logo.png' %}" alt="Logo">
+        </div>
+        <div class="brand-text">
+          <h1>Interaction Parent-Enfant</h1>
+          <p>Suivi et évaluation du développement</p>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Accueil</a>
+        <a href="{% url 'interaction:enfant_create' %}" class="btn btn-primary">Créer un enfant</a>
+
+        <!-- BOUTON ADMIN -->
+        <a href="/admin/" class="btn btn-admin">Se connecter</a>
+
+        <button id="themeBtn" class="btn btn-ghost">Mode clair</button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- CONTENU -->
+<main class="page">
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="card">
+      <strong>Interaction Parent-Enfant</strong><br>
+      <span>Plateforme professionnelle de suivi</span>
+    </div>
+  </div>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+  const root = document.documentElement;
+  const btn = document.getElementById("themeBtn");
+
+  btn.addEventListener("click", function () {
+    const current = root.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+  });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

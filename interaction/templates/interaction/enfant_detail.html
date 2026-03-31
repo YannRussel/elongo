@@ -1,0 +1,369 @@
+{% extends "interaction/base.html" %}
+{% block title %}Fiche enfant | Interaction Parent-Enfant{% endblock %}
+
+{% block extra_css %}
+<style>
+  .detail-wrap {
+    display: grid;
+    gap: 24px;
+  }
+
+  .hero-detail {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  .identity-card,
+  .code-card,
+  .rubriques-card,
+  .history-card {
+    padding: 28px;
+  }
+
+  .identity-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .identity-title h2 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+  }
+
+  .identity-title p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    display: grid;
+    place-items: center;
+    font-size: 1.7rem;
+    background: linear-gradient(135deg, rgba(76, 201, 240, .18), rgba(123, 97, 255, .18));
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .meta-box {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid var(--border);
+  }
+
+  .meta-box .label {
+    display: block;
+    color: var(--muted);
+    font-size: .88rem;
+    margin-bottom: 8px;
+  }
+
+  .meta-box strong {
+    font-size: 1.03rem;
+  }
+
+  .code-card h3 {
+    margin: 0 0 10px;
+  }
+
+  .code-card p {
+    margin: 0 0 18px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .code-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .05);
+    border: 1px dashed rgba(76, 201, 240, .35);
+    margin-bottom: 14px;
+  }
+
+  .code-value {
+    font-size: 1.08rem;
+    font-weight: 900;
+    letter-spacing: .06em;
+  }
+
+  .copy-feedback {
+    color: var(--brand);
+    font-weight: 700;
+    font-size: .9rem;
+    min-height: 22px;
+  }
+
+  .rubrique-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .rubrique-item {
+    padding: 22px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .rubrique-item h4 {
+    margin: 0;
+  }
+
+  .rubrique-item p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.75;
+    flex: 1;
+  }
+
+  .rubrique-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .history-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .history-item {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid var(--border);
+  }
+
+  .history-item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .history-item p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .empty-box {
+    padding: 24px;
+    border-radius: 18px;
+    border: 1px dashed var(--border);
+    background: rgba(255, 255, 255, .03);
+    color: var(--muted);
+  }
+
+  @media (max-width: 1024px) {
+
+    .hero-detail,
+    .rubrique-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+
+    .identity-card,
+    .code-card,
+    .rubriques-card,
+    .history-card {
+      padding: 22px;
+    }
+
+    .meta-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .identity-title h2 {
+      font-size: 1.6rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="detail-wrap">
+
+    <section class="hero-detail">
+      <div class="card identity-card">
+        <div class="kicker"><span class="kdot"></span> Fiche enfant</div>
+
+        <div class="identity-top">
+          <div class="identity-title">
+            <h2>{{ enfant.nom }} {% if enfant.prenom %}{{ enfant.prenom }}{% endif %}</h2>
+            <p>
+              Vous êtes sur la fiche de suivi de l’enfant. À partir de cette page,
+              vous pouvez lancer une évaluation dans une rubrique et consulter l’historique.
+            </p>
+          </div>
+          <div class="avatar">👶</div>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-box">
+            <span class="label">Nom complet</span>
+            <strong>{{ enfant.nom }} {% if enfant.prenom %}{{ enfant.prenom }}{% endif %}</strong>
+          </div>
+          <div class="meta-box">
+            <span class="label">Date de naissance</span>
+            <strong>{{ enfant.date_naissance|date:"d/m/Y" }}</strong>
+          </div>
+          <div class="meta-box">
+            <span class="label">Âge</span>
+            <strong>{{ enfant.age }} an{{ enfant.age|pluralize }}</strong>
+          </div>
+        </div>
+        {% if derniere_evaluation %}
+        <div
+          style="margin-top:18px; padding:18px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid var(--border);">
+          <div style="font-weight:800; margin-bottom:8px;">Dernière évaluation</div>
+          <div style="color:var(--muted); line-height:1.75;">
+            Score : <strong>{{ derniere_evaluation.score_total }}/{{ derniere_evaluation.score_maximum }}</strong>
+            ({{ derniere_evaluation.pourcentage_score }}%)<br>
+            Date : {{ derniere_evaluation.date_evaluation|date:"d/m/Y à H:i" }}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <aside class="card code-card">
+        <div class="kicker"><span class="kdot"></span> Code personnel</div>
+        <h3>Code de suivi de l’enfant</h3>
+        <p>
+          Conservez ce code. C’est grâce à lui que vous retrouverez cette fiche plus tard
+          depuis la page d’accueil.
+        </p>
+
+        <div class="code-box">
+          <span class="code-value mono" id="childCode">{{ enfant.code_enfant }}</span>
+          <button type="button" class="btn btn-primary" id="copyCodeBtn">Copier le code</button>
+        </div>
+
+        <div class="copy-feedback" id="copyFeedback"></div>
+
+        <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Retour à l’accueil</a>
+      </aside>
+    </section>
+
+    <section class="card rubriques-card">
+      <div class="section-head">
+        <div>
+          <div class="kicker"><span class="kdot"></span> Évaluations</div>
+          <h3>Choisir une rubrique</h3>
+          <p>
+            Cliquez sur une rubrique pour démarrer une évaluation concernant cet enfant.
+          </p>
+        </div>
+      </div>
+
+      {% if rubriques %}
+      <div class="rubrique-grid">
+        {% for rubrique in rubriques %}
+        <article class="rubrique-item">
+          <h4>{{ rubrique.libelle }}</h4>
+          <p>
+            Cette rubrique contient {{ rubrique.questions.count }} question{{ rubrique.questions.count|pluralize }}
+            pour guider l’évaluation parentale.
+          </p>
+          <div class="rubrique-meta">
+            <span class="pill">{{ rubrique.questions.count }} question{{ rubrique.questions.count|pluralize }}</span>
+            <a href="{% url 'interaction:evaluation_create' enfant.code_enfant rubrique.id %}" class="btn btn-primary">
+              Commencer l’évaluation
+            </a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-box">
+        Aucune rubrique n’est encore disponible pour lancer une évaluation.
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="card history-card">
+      <div class="section-head">
+        <div>
+          <div class="kicker"><span class="kdot"></span> Historique</div>
+          <h3>Évaluations déjà enregistrées</h3>
+          <p>
+            Retrouvez ici les évaluations précédentes réalisées pour cet enfant.
+          </p>
+        </div>
+      </div>
+
+      {% if evaluations %}
+      <div class="history-list">
+        {% for evaluation in evaluations %}
+        <article class="history-item">
+          <div class="history-item-top">
+            <strong>Évaluation du {{ evaluation.date_evaluation|date:"d/m/Y à H:i" }}</strong>
+            <a href="{% url 'interaction:evaluation_result' evaluation.id %}" class="btn btn-secondary">Voir le
+              résultat</a>
+          </div>
+          <p>
+            Score enregistré : {{ evaluation.score_total }}/{{ evaluation.score_maximum }}
+            ({{ evaluation.pourcentage_score }}%)
+          </p>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-box">
+        Aucune évaluation n’a encore été réalisée pour cet enfant.
+      </div>
+      {% endif %}
+    </section>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const copyBtn = document.getElementById("copyCodeBtn");
+  const codeEl = document.getElementById("childCode");
+  const feedbackEl = document.getElementById("copyFeedback");
+
+  if (copyBtn && codeEl) {
+    copyBtn.addEventListener("click", async function () {
+      try {
+        await navigator.clipboard.writeText(codeEl.textContent.trim());
+        feedbackEl.textContent = "Code copié avec succès.";
+      } catch (e) {
+        feedbackEl.textContent = "Copie impossible sur ce navigateur. Notez le code manuellement.";
+      }
+    });
+  }
+</script>
+{% endblock %}

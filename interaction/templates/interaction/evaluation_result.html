@@ -1,0 +1,229 @@
+{% extends "interaction/base.html" %}
+{% block title %}Résultat de l’évaluation | Interaction Parent-Enfant{% endblock %}
+
+{% block extra_css %}
+<style>
+  .result-wrap{
+    display:grid;
+    gap:22px;
+  }
+
+  .top-card,
+  .score-card,
+  .global-card,
+  .interpret-card,
+  .comment-card{
+    padding:28px;
+  }
+
+  .top-card h2{
+    margin:0 0 10px;
+  }
+
+  .top-card p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.75;
+  }
+
+  .score-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+  }
+
+  .score-box{
+    padding:22px;
+    border-radius:20px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+    text-align:center;
+  }
+
+  .score-box span{
+    display:block;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+
+  .score-box strong{
+    font-size:1.7rem;
+    font-weight:900;
+  }
+
+  .global-box{
+    padding:22px;
+    border-radius:20px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+  }
+
+  .global-box h4{
+    margin:0 0 10px;
+  }
+
+  .global-box p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.8;
+    white-space:pre-line;
+  }
+
+  .interpret-list{
+    display:grid;
+    gap:16px;
+  }
+
+  .interpret-item{
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+  }
+
+  .interpret-item h4{
+    margin:0 0 10px;
+  }
+
+  .interpret-item p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.8;
+  }
+
+  .actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:6px;
+  }
+
+  .comment-card p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.8;
+    white-space:pre-line;
+  }
+
+  @media (max-width: 768px){
+    .top-card,
+    .score-card,
+    .global-card,
+    .interpret-card,
+    .comment-card{
+      padding:22px;
+    }
+
+    .score-grid{
+      grid-template-columns:1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="result-wrap">
+
+    <section class="card top-card">
+      <div class="kicker"><span class="kdot"></span> Résultat enregistré</div>
+      <h2>Évaluation de {{ evaluation.enfant.nom }} {% if evaluation.enfant.prenom %}{{ evaluation.enfant.prenom }}{% endif %}</h2>
+      <p>
+        L’évaluation a été enregistrée avec succès. Vous pouvez consulter ci-dessous
+        le score global ainsi que les interprétations.
+      </p>
+
+      <div class="actions" style="margin-top:18px;">
+        <a href="{% url 'interaction:enfant_detail' evaluation.enfant.code_enfant %}" class="btn btn-primary">Retour à la fiche enfant</a>
+        <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Accueil</a>
+      </div>
+    </section>
+
+    <section class="card score-card">
+      <div class="section-head">
+        <div>
+          <div class="kicker"><span class="kdot"></span> Synthèse</div>
+          <h3>Résumé du score</h3>
+        </div>
+      </div>
+
+      <div class="score-grid">
+        <div class="score-box">
+          <span>Score total</span>
+          <strong>{{ score_total }}</strong>
+        </div>
+        <div class="score-box">
+          <span>Score maximum</span>
+          <strong>{{ score_maximum }}</strong>
+        </div>
+        <div class="score-box">
+          <span>Pourcentage</span>
+          <strong>{{ pourcentage }}%</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card global-card">
+      <div class="section-head">
+        <div>
+          <div class="kicker"><span class="kdot"></span> Interprétation globale</div>
+          <h3>Lecture générale du score</h3>
+        </div>
+      </div>
+
+      {% if interpretation_globale %}
+        <div class="global-box">
+          <h4>{{ interpretation_globale.titre }}</h4>
+          <p>{{ interpretation_globale.message }}</p>
+        </div>
+      {% else %}
+        <div class="global-box">
+          <h4>Aucune interprétation globale définie</h4>
+          <p>
+            Ajoute des paliers d’interprétation globale dans l’administration
+            pour que le score final affiche automatiquement un message.
+          </p>
+        </div>
+      {% endif %}
+    </section>
+
+    <section class="card interpret-card">
+      <div class="section-head">
+        <div>
+          <div class="kicker"><span class="kdot"></span> Interprétation par rubrique</div>
+          <h3>Lecture détaillée</h3>
+          <p>Chaque rubrique affiche le score obtenu et son interprétation associée.</p>
+        </div>
+      </div>
+
+      {% if interpretations %}
+        <div class="interpret-list">
+          {% for item in interpretations %}
+            <article class="interpret-item">
+              <h4>{{ item.rubrique }} — Score : {{ item.score }}</h4>
+              <p>{{ item.message }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-box">
+          Aucune interprétation n’a été trouvée pour cette évaluation.
+        </div>
+      {% endif %}
+    </section>
+
+    {% if evaluation.commentaire %}
+      <section class="card comment-card">
+        <div class="section-head">
+          <div>
+            <div class="kicker"><span class="kdot"></span> Observation</div>
+            <h3>Commentaire général</h3>
+          </div>
+        </div>
+        <p>{{ evaluation.commentaire }}</p>
+      </section>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

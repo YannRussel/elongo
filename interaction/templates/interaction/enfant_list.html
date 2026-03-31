@@ -1,0 +1,44 @@
+{% extends "interaction/base.html" %}
+{% block title %}Mes enfants | interaction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom: 20px;">
+        <div>
+            <h1 class="section-title">Mes enfants</h1>
+            <p class="section-subtitle">
+                Retrouvez les enfants déjà enregistrés et leur code personnel.
+            </p>
+        </div>
+
+        <a href="{% url 'interaction:enfant_create' %}" class="btn btn-primary">Ajouter un enfant</a>
+    </div>
+
+    {% if enfants %}
+        <div class="grid grid-2">
+            {% for enfant in enfants %}
+                <div class="child-card">
+                    <h3>{{ enfant.nom }} {{ enfant.prenom }}</h3>
+                    <p>
+                        <strong>Code :</strong> {{ enfant.code_enfant }}<br>
+                        <strong>Date de naissance :</strong> {{ enfant.date_naissance|date:"d/m/Y" }}<br>
+                        <strong>Âge :</strong> {{ enfant.age }} an(s)
+                    </p>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <a href="{% url 'interaction:enfant_detail' enfant.code_enfant %}" class="btn btn-secondary">
+                            Ouvrir la fiche
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="child-card">
+            <h3>Aucun enfant enregistré</h3>
+            <p>Commencez par créer une fiche enfant.</p>
+            <a href="{% url 'interaction:enfant_create' %}" class="btn btn-primary">Créer maintenant</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "interaction/base.html" %}
+{% block title %}Créer un enfant | Interaction Parent-Enfant{% endblock %}
+
+{% block extra_css %}
+<style>
+  .form-page{
+    display:grid;
+    grid-template-columns:1fr .9fr;
+    gap:22px;
+    align-items:start;
+  }
+
+  .form-card,
+  .info-card{
+    padding:30px;
+  }
+
+  .form-card h2,
+  .info-card h3{
+    margin:0 0 10px;
+  }
+
+  .lead{
+    margin:0 0 22px;
+    color:var(--muted);
+    line-height:1.75;
+  }
+
+  .form-grid{
+    display:grid;
+    gap:16px;
+  }
+
+  .field{
+    display:grid;
+    gap:8px;
+  }
+
+  .field label{
+    font-weight:700;
+    font-size:.95rem;
+  }
+
+  .field input{
+    width:100%;
+    padding:15px 16px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:var(--surface-3);
+    color:var(--text);
+    outline:none;
+    font-size:1rem;
+  }
+
+  .field input::placeholder{
+    color:var(--muted);
+  }
+
+  .actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:6px;
+  }
+
+  .tip-list{
+    display:grid;
+    gap:14px;
+    margin-top:20px;
+  }
+
+  .tip{
+    padding:16px 18px;
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+  }
+
+  .tip strong{
+    display:block;
+    margin-bottom:6px;
+  }
+
+  .tip p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.7;
+  }
+
+  @media (max-width: 960px){
+    .form-page{
+      grid-template-columns:1fr;
+    }
+
+    .form-card,
+    .info-card{
+      padding:22px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-page">
+    <section class="card form-card">
+      <div class="kicker"><span class="kdot"></span> Enregistrement initial</div>
+      <h2>Créer la fiche d’un enfant</h2>
+      <p class="lead">
+        Renseignez les informations principales de l’enfant. Une fois l’enregistrement terminé,
+        l’application générera automatiquement un code unique que vous devrez conserver.
+      </p>
+
+      <form method="post" class="form-grid">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="nom">Nom</label>
+          <input
+            type="text"
+            id="nom"
+            name="nom"
+            value="{{ data.nom|default:'' }}"
+            placeholder="Nom de l’enfant"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="prenom">Prénom</label>
+          <input
+            type="text"
+            id="prenom"
+            name="prenom"
+            value="{{ data.prenom|default:'' }}"
+            placeholder="Prénom de l’enfant"
+          >
+        </div>
+
+        <div class="field">
+          <label for="date_naissance">Date de naissance</label>
+          <input
+            type="date"
+            id="date_naissance"
+            name="date_naissance"
+            value="{{ data.date_naissance|default:'' }}"
+            required
+          >
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Enregistrer et générer le code</button>
+          <a href="{% url 'interaction:home' %}" class="btn btn-secondary">Retour à l’accueil</a>
+        </div>
+      </form>
+    </section>
+
+    <aside class="card info-card">
+      <div class="kicker"><span class="kdot"></span> Important</div>
+      <h3>Ce qu’il faut savoir</h3>
+      <p class="lead">
+        L’application ne présente pas de liste générale d’enfants aux parents.
+        Le suivi se fait uniquement grâce au code personnel généré après création.
+      </p>
+
+      <div class="tip-list">
+        <div class="tip">
+          <strong>1. Un code sera généré automatiquement</strong>
+          <p>Après validation, un code du type <span class="mono">ENF-XXXXXXXX</span> sera attribué à l’enfant.</p>
+        </div>
+
+        <div class="tip">
+          <strong>2. Conservez bien ce code</strong>
+          <p>Notez-le quelque part ou copiez-le. Il servira à retrouver la fiche de l’enfant plus tard.</p>
+        </div>
+
+        <div class="tip">
+          <strong>3. Le suivi se fera avec ce code</strong>
+          <p>Depuis l’accueil, il suffira d’entrer le code pour revoir l’enfant et lancer des évaluations.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}
